@@ -6,6 +6,10 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
 $routes = new RouteCollection();
+
+$routes->add('index', new Route('/', array(
+	'_controller' => 'App\\Controllers\\HelloController::index'
+)));
 $routes->add('foo', new Route('/foo', array(
 	'_controller' => 'App\\Controllers\\FooController::show'
 )));
