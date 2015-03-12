@@ -1,5 +1,5 @@
 {
-	"name": "jessiesiat/hack",
+	"name": "jessiesiat/hack-php",
     "type": "microframework",
     "description": "Microframework for hackers",
     "keywords": ["microframework", "library"],
@@ -10,10 +10,8 @@
             "email": "jcris.siat@gmail.com"
         }
     ],
-    "require": {
-        "php": ">=5.3.0"
-    },
 	"require": {
+        "php": ">=5.3.0"
 		"symfony/http-kernel": "2.6.*",
 		"symfony/routing": "2.6.*",
 		"symfony/finder": "2.6.*",
