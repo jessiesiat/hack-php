@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use Hack\Controller as BaseController;
+
 class FooController extends BaseController
 {
 	

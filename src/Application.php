@@ -13,6 +13,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Config\FileLocator;
 use Hack\Config\Repository as ConfigRepository;
+use Hack\Controller as BaseController;
 
 class Application extends \Pimple\Container
 {
@@ -44,7 +45,7 @@ class Application extends \Pimple\Container
 			return new ControllerResolver;
 		};
 
-		\App\Controllers\BaseController::setApplication($this);
+		BaseController::setApplication($this);
 
 		foreach ($items as $key => $value) {
 			$this[$key] = $value;

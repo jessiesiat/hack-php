@@ -1,12 +1,11 @@
 <?php 
 
-namespace App\Controllers;
+namespace Hack;
 
 use Twig_Loader_Filesystem;
 use Twig_Environment;
-use Hack\Application;
 
-abstract class BaseController {
+abstract class Controller {
 
 	/**
 	 * The application instance being facaded.
@@ -18,6 +17,11 @@ abstract class BaseController {
 	public static function setApplication(Application $app)
 	{
 		static::$app = $app;
+	}
+
+	public static function getApplication()
+	{
+		return static::$app;
 	}
 
 	public function render($view, $data = array())
