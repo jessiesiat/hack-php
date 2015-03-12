@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
  * -----------------------------------------------------------------
  */
 
-$app = new Hack\Application();
+$app = new Hack\Foundation\Application();
 
 $response = $app->handle($request = Request::createFromGlobals());
 

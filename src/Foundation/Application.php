@@ -1,6 +1,6 @@
 <?php 
 
-namespace Hack;
+namespace Hack\Foundation;
 
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
@@ -12,8 +12,9 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Config\FileLocator;
-use Hack\Config\Repository as ConfigRepository;
 use Hack\Controller as BaseController;
+use Hack\Config\Repository as ConfigRepository;
+use Hack\Foundation\Listeners\StringResponseListener;
 
 class Application extends \Pimple\Container
 {
@@ -24,9 +25,9 @@ class Application extends \Pimple\Container
 		$this['dispatcher'] = function($c) {
 			return new EventDispatcher;	
 		};
-		$this['path.app'] = realpath(__DIR__.'/../app');
-		$this['path.base'] = realpath(__DIR__.'/..');
-		$this['path.config'] = realpath(__DIR__.'/../config');
+		$this['path.app'] = realpath(__DIR__.'/../../app');
+		$this['path.base'] = realpath(__DIR__.'/../..');
+		$this['path.config'] = realpath(__DIR__.'/../../config');
 		$this['config'] = function($c) {
 			return (new ConfigRepository)->loadFromPath($c['path.config']);
 		};
@@ -38,7 +39,7 @@ class Application extends \Pimple\Container
 			return new PhpFileLoader($c['file_locator']);
 		};
 		$this->extend('dispatcher', function($dispatcher, $c) {
-			$dispatcher->addSubscriber(new \App\Listeners\StringResponseListener);
+			$dispatcher->addSubscriber(new StringResponseListener);
 			return $dispatcher;
 		});
 		$this['resolver'] = function($c) {

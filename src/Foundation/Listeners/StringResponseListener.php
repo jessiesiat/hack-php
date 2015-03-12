@@ -1,6 +1,6 @@
 <?php
  
-namespace App\Listeners;
+namespace Hack\Foundation\Listeners;
  
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;

@@ -1,6 +1,6 @@
 <?php 
 
-use Hack\Application;
+use Hack\Foundation\Application;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
@@ -9,7 +9,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 	{
 		$app = new Application;
 
-		$this->assertInstanceOf('Hack\Application', $app);
+		$this->assertInstanceOf('Hack\Foundation\Application', $app);
 		$this->assertInstanceOf('Pimple\Container', $app);
 	}
 
@@ -20,6 +20,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertSame('bar', $app['foo']);
 		$this->assertTrue(isset($app['foo']));
+	}
+
+	public function testBaseControllerHasApplicationInstance()
+	{
+		$app = new Application;
+		$controllerApp = Hack\Controller::getApplication();
+
+		$this->assertInstanceOf('Hack\Foundation\Application', $controllerApp);
 	}
 
 }

@@ -2,6 +2,7 @@
 
 namespace Hack;
 
+use Hack\Foundation\Application;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
