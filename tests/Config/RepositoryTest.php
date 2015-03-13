@@ -1,5 +1,7 @@
 <?php 
 
+namespace Tests\Config;
+
 use Hack\Config\Repository as ConfigRepository;
 
 class RepositoryTest extends \PHPUnit_Framework_TestCase

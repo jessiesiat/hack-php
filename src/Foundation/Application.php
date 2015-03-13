@@ -115,11 +115,17 @@ class Application extends \Pimple\Container
 	/**
 	 * Create an instance of the passed argument
 	 *
-	 * @param mixed $abstract  
+	 * @param mixed  $abstract  
+	 * @param array  $parameters
 	 * @return Object  
 	 */
-	public function make($abstract)
+	public function make($abstract, $parameters = [])
 	{
+		if ($abstract instanceof Closure)
+		{
+			return $abstract($this, $parameters);
+		}
+
 		$reflector = new \ReflectionClass($abstract);
 
 		if (! $reflector->isInstantiable()) {
@@ -134,7 +140,12 @@ class Application extends \Pimple\Container
 
 		$dependencies = $constructor->getParameters();
 
-		$instances = $this->getDependencies($dependencies);
+		// Key the parameters by name if it has a numeric key base on the dependencies
+		$parameters = $this->keyParametersByArgument(
+			$dependencies, $parameters
+		);
+
+		$instances = $this->getDependencies($dependencies, $parameters);
 
 		return $reflector->newInstanceArgs($instances);
 	}
@@ -146,7 +157,7 @@ class Application extends \Pimple\Container
 	 * @param  array  $primitives
 	 * @return array
 	 */
-	protected function getDependencies($parameters)
+	protected function getDependencies($parameters, array $primitives = [])
 	{
 		$dependencies = [];
 
@@ -154,10 +165,14 @@ class Application extends \Pimple\Container
 		{
 			$dependency = $parameter->getClass();
 
-			// If dependency is null, we'll assume it is a primitive type.
-			// If we cannot resolve it, we will just bomb out since we 
-			// have no where to go.
-			if (is_null($dependency))
+			// Assign passed primitive types if exist on parameters, 
+			// else resolve parameter. If we cannot resolve we will
+			// just bomb out since we have no where to go!
+			if (array_key_exists($parameter->name, $primitives))
+			{
+				$dependencies[] = $primitives[$parameter->name];
+			}
+			elseif (is_null($dependency))
 			{
 				$dependencies[] = $this->resolveNonClass($parameter);
 			}
@@ -187,7 +202,7 @@ class Application extends \Pimple\Container
 
 		$message = "Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}";
 
-		throw new Exception($message);
+		throw new \Exception($message);
 	}
 
 	/**
@@ -208,7 +223,7 @@ class Application extends \Pimple\Container
 		// If we can not resolve the class instance, we will check to see if the value
 		// is optional, and if it is we will return the optional parameter value as
 		// the value of the dependency, similarly to how we do this with scalars.
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			if ($parameter->isOptional())
 			{
@@ -217,6 +232,28 @@ class Application extends \Pimple\Container
 
 			throw $e;
 		}
+	}
+
+	/**
+	 * If extra parameters are passed by numeric ID, re-key them by argument name.
+	 *
+	 * @param  array  $dependencies
+	 * @param  array  $parameters
+	 * @return array
+	 */
+	protected function keyParametersByArgument(array $dependencies, array $parameters)
+	{
+		foreach ($parameters as $key => $value)
+		{
+			if (is_numeric($key))
+			{
+				unset($parameters[$key]);
+
+				$parameters[$dependencies[$key]->name] = $value;
+			}
+		}
+
+		return $parameters;
 	}
 
 }
