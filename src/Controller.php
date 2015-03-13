@@ -15,28 +15,36 @@ abstract class Controller {
 	 */
 	protected static $app;
 
+	/**
+	 * Set the application instance
+	 *
+	 * @param Hack\Foundation\Application  $app
+	 */
 	public static function setApplication(Application $app)
 	{
 		static::$app = $app;
 	}
 
+	/**
+	 * Get the application instance
+	 *
+	 * @return Hack\Foundation\Application
+	 */
 	public static function getApplication()
 	{
 		return static::$app;
 	}
 
+	/**
+	 * Render view using Twig templating library
+	 *
+	 * @param mixed  $view  Name of view template to render
+	 * @param array  $data  Array of data to be pass to the view
+	 * @return mixed
+	 */
 	public function render($view, $data = array())
 	{
-		$viewPath = static::$app['config']['view.path'];
-		$viewCachePath = static::$app['config']['view.cache_path'];
-
-		$loader = new Twig_Loader_Filesystem($viewPath);
-		$twig = new Twig_Environment($loader, array(
-		    'cache' => $viewCachePath,
-		    'debug' => true,
-		));
-
-		return $twig->render($view, $data);
+		return static::$app['view']->render($view, $data);
 	}
 
 }

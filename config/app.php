@@ -4,6 +4,12 @@ return array(
 
 	'debug' => true,
 
-	'timezone' => 'Asia/Manila',
+	'timezone' => 'UTC',
+
+	'providers' => array(
+
+		'Hack\View\ViewServiceProvider',
+
+	),
 
 );

@@ -14,7 +14,7 @@ class FooController extends BaseController
 
 	public function show()
 	{
-		$name = 'Foo';
+		$name = (new \App\Handlers\TestHandler)->getName();
 
 		return $this->render('admin/foo.html', compact('name'));
 	}
