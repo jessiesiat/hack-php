@@ -25,7 +25,7 @@ class Application extends \Pimple\Container
 	
 	/**
      * Instantiate a new Application. Registers base services / parameters into the 
-     * DI container. Also acccepts array of key value pairs to be registered on
+     * DI container. Acccepts array of key value pairs to be registered on
      * the container.
      *
      * @param array $items 	The parameters or objects.
