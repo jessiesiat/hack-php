@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 $app = new Hack\Foundation\Application();
 
-$response = $app->handle($request = Request::createFromGlobals());
+$app->get('/', 'App\\Controllers\\HelloController::index');
+$app->get('/foo', 'App\\Controllers\\FooController::show');
 
-$response->send();
-
-$app->terminate($request, $response);
+$app->run();

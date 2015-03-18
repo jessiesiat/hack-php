@@ -9,12 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Loader\PhpFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Config\FileLocator;
-use Hack\Controller as BaseController;
-use Hack\Config\Repository as ConfigRepository;
 use Hack\Foundation\Listeners\StringResponseListener;
+use Hack\Config\Repository as ConfigRepository;
+use Hack\Controller as BaseController;
+use Hack\ControllerFactory;
 use Pimple\ServiceProviderInterface;
 
 class Application extends \Pimple\Container
@@ -30,9 +32,8 @@ class Application extends \Pimple\Container
      */
 	public function __construct($items = array())
 	{
-		$this['dispatcher'] = function($c) {
-			return new EventDispatcher;	
-		};
+		parent::__construct($items);
+
 		$this['path.app'] = realpath(__DIR__.'/../../app');
 		$this['path.base'] = realpath(__DIR__.'/../..');
 		$this['path.config'] = realpath(__DIR__.'/../../config');
@@ -40,24 +41,49 @@ class Application extends \Pimple\Container
 			return (new ConfigRepository)->loadFromPath($c['path.config']);
 		};
 		$this['debug'] = $this['config']['app.debug'];
-		$this->extend('dispatcher', function($dispatcher, $c) {
-			$dispatcher->addSubscriber(new StringResponseListener);
-			return $dispatcher;
-		});
+		
 		$this['resolver'] = function($c) {
 			return new ControllerResolver;
 		};
-
+		$this['routes'] = function($c) {
+			return new RouteCollection;
+		};
+		$this['controllers'] = function($c) {
+			return new ControllerFactory($c['routes']);
+		};
+		$this['dispatcher'] = function($c) {
+			$context = new RequestContext();
+			$matcher = new UrlMatcher($this['routes'], $context);
+			$dispatcher = new EventDispatcher();
+			$dispatcher->addSubscriber(new StringResponseListener);
+			$dispatcher->addSubscriber(new RouterListener($matcher));
+			return $dispatcher;
+		};
+		$this['kernel'] = function($c) {
+			return new HttpKernel($this['dispatcher'], $this['resolver']);
+		};
 		BaseController::setApplication($this);
 		if($this['debug']) \Symfony\Component\Debug\Debug::enable();
 		
 		date_default_timezone_set($this['config']['app.timezone']);
 
-		foreach ($items as $key => $value) {
-			$this[$key] = $value;
+		$this->registerServiceProviders();
+	}
+
+	/**
+	 * Runs the application
+	 * 
+	 * @param Symfony\Component\HttpFoundation\Request  $request
+	 */
+	public function run(Request $request = null)
+	{
+		if (null == $request) {
+			$request = Request::createFromGlobals();
 		}
 
-		$this->registerServiceProviders();
+		$response = $this->handle($request);
+		$response->send();
+		$this->terminate($request, $response);
 	}
 
 	/**
@@ -68,27 +94,39 @@ class Application extends \Pimple\Container
 	 */
 	public function handle(Request $request)
 	{
-		$routes = $this->bootRoutes();
+		$this->flushRoutes();
 
-		$context = (new RequestContext())->fromRequest($request);
-
-		$matcher = new UrlMatcher($routes, $context);
-
-		$this['dispatcher']->addSubscriber(new RouterListener($matcher));
-
-		$this->kernel = new HttpKernel($this['dispatcher'], $this['resolver']);
-
-		return $this->kernel->handle($request);
+		return $this['kernel']->handle($request);
 	}
 
+	/**
+	 * Terminates the application. Fires `kernel.terminate` event
+	 * 
+	 * @param Symfony\Component\HttpFoundation\Request  $request
+	 * @param Symfony\Component\HttpFoundation\Response  $response
+	 */
 	public function terminate(Request $request, Response $response)
 	{
-		$this->kernel->terminate($request, $response);
+		$this['kernel']->terminate($request, $response);
 	}
 
-	public function bootRoutes()
+	/**
+	 * Add GET route to the application
+	 *
+	 * @param mixed  $pattern  Route path
+	 * @param mixed  $to       Controller handler
+	 */
+	public function get($pattern, $to = null)
 	{
-		return require $this['path.app'].'/routes.php';
+		$this['controllers']->route('GET', $pattern, $to);
+	}
+
+	/** 
+	 * Flushes the routes to the application
+	 */
+	public function flushRoutes()
+	{
+		$this['routes']->addCollection($this['controllers']->allRoutes());
 	}
 
 	/**
