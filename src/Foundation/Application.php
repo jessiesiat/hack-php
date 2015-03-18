@@ -118,7 +118,51 @@ class Application extends \Pimple\Container
 	 */
 	public function get($pattern, $to = null)
 	{
-		$this['controllers']->route('GET', $pattern, $to);
+		$this['controllers']->match('GET', $pattern, $to);
+	}
+
+	/**
+	 * Add POST route to the application
+	 *
+	 * @param mixed  $pattern  Route path
+	 * @param mixed  $to       Controller handler
+	 */
+	public function post($pattern, $to = null)
+	{
+		$this['controllers']->match('POST', $pattern, $to);
+	}
+
+	/**
+	 * Add PUT route to the application
+	 *
+	 * @param mixed  $pattern  Route path
+	 * @param mixed  $to       Controller handler
+	 */
+	public function put($pattern, $to = null)
+	{
+		$this['controllers']->match('PUT', $pattern, $to);
+	}
+
+	/**
+	 * Add PATCH route to the application
+	 *
+	 * @param mixed  $pattern  Route path
+	 * @param mixed  $to       Controller handler
+	 */
+	public function patch($pattern, $to = null)
+	{
+		$this['controllers']->match('PATCH', $pattern, $to);
+	}
+
+	/**
+	 * Add DELETE route to the application
+	 *
+	 * @param mixed  $pattern  Route path
+	 * @param mixed  $to       Controller handler
+	 */
+	public function delete($pattern, $to = null)
+	{
+		$this['controllers']->match('DELETE', $pattern, $to);
 	}
 
 	/** 
