@@ -4,3 +4,4 @@ composer.lock
 /vendor/
 /public/
 /resources/
+/app/
