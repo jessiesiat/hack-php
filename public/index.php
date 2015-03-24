@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
  * -----------------------------------------------------------------
  */
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 $app = new Hack\Foundation\Application();
 
 $app->get('/', 'App\\Controllers\\HelloController::index');

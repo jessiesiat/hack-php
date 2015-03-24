@@ -16,12 +16,14 @@ use Symfony\Component\Config\FileLocator;
 use Hack\Foundation\Listeners\StringResponseListener;
 use Hack\Config\Repository as ConfigRepository;
 use Hack\Controller as BaseController;
+use Hack\ServiceProviderInterface;
 use Hack\ControllerFactory;
-use Pimple\ServiceProviderInterface;
 
 class Application extends \Pimple\Container
 {
-	protected $kernel;
+	protected $booted = false;
+
+	protected $providers = array();
 	
 	/**
      * Instantiate a new Application. Registers base services / parameters into the 
@@ -37,6 +39,7 @@ class Application extends \Pimple\Container
 		$this['path.app'] = realpath(__DIR__.'/../../app');
 		$this['path.base'] = realpath(__DIR__.'/../..');
 		$this['path.config'] = realpath(__DIR__.'/../../config');
+		$this['path.storage'] = realpath(__DIR__.'/../../storage');
 		$this['config'] = function($c) {
 			return (new ConfigRepository)->loadFromPath($c['path.config']);
 		};
@@ -69,7 +72,30 @@ class Application extends \Pimple\Container
 		
 		date_default_timezone_set($this['config']['app.timezone']);
 
-		$this->registerServiceProviders();
+		$this->registerProviders();
+	}
+
+	/**
+	 * Registers core service providers into the container.
+	 * Service providers are found in providers array in 
+	 * app config path.
+	 */
+	public function registerProviders()
+	{
+		$providers = $this['config']['app.providers'];
+
+		// Loop through each provider, create an instance and 
+		// register it in the container 
+		foreach ($providers as $provider) 
+		{
+			$this->providers[] = $object = $this->make($provider);
+
+			if(!$object instanceOf ServiceProviderInterface) {
+				throw new \Exception('Service provider %s must implement Hack\ServiceProviderInterface', get_class($object));
+			}
+
+			$object->register($this);
+		}
 	}
 
 	/**
@@ -98,7 +124,19 @@ class Application extends \Pimple\Container
 	{
 		$this['request_context']->fromRequest($request);
 
+		$this->boot();
+
 		return $this['kernel']->handle($request);
+	}
+
+	public function boot()
+	{
+		if ($this->booted) return;
+
+		foreach ($this->providers as $provider) {
+			$provider->boot($this);
+		}
+		$this->booted = true;
 	}
 
 	/**
@@ -173,27 +211,6 @@ class Application extends \Pimple\Container
 	public function flushRoutes()
 	{
 		$this['routes']->addCollection($this['controllers']->allRoutes());
-	}
-
-	/**
-	 * Registers core service providers into the container.
-	 * Service providers are found in providers array in 
-	 * app config path.
-	 */
-	public function registerServiceProviders()
-	{
-		$providers = $this['config']['app.providers'];
-
-		// Loop through each provider, create an instance and 
-		// register it in the container 
-		foreach ($providers as $provider) 
-		{
-			$object = $this->make($provider);
-
-			if($object instanceOf ServiceProviderInterface) {
-				$this->register($object);
-			}
-		}
 	}
 
 	/**

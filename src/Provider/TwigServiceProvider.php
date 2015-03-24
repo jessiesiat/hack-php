@@ -2,18 +2,19 @@
 
 namespace Hack\Provider;
 
-use Pimple\Container;
+use Hack\ServiceProviderInterface;
+use Hack\Foundation\Application;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
-class TwigServiceProvider implements \Pimple\ServiceProviderInterface
+class TwigServiceProvider implements ServiceProviderInterface
 {
 	/**
 	 * Register a service into the container
 	 *
 	 * @param Pimple\Container $app  DI container instance
 	 */
-	public function register(Container $app)
+	public function register(Application $app)
 	{
 		$app['view'] = function ($app) {
 			$viewPath = $app['config']['view.path'];
@@ -26,4 +27,7 @@ class TwigServiceProvider implements \Pimple\ServiceProviderInterface
 			));
 		};
 	}
+
+	public function boot(Application $app) {}
+	
 }

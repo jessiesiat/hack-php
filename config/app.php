@@ -4,11 +4,12 @@ return array(
 
 	'debug' => true,
 
-	'timezone' => 'UTC',
+	'timezone' => 'Asia/Manila',
 
 	'providers' => array(
 
 		'Hack\Provider\TwigServiceProvider',
+		'Hack\Provider\MonologServiceProvider',
 
 	),
 
