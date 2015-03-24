@@ -19,8 +19,8 @@
 		"pimple/pimple": "3.0.0",
 		"twig/twig": "~1.0",
 		"illuminate/support": "5.0.*",
-		"monolog/monolog": "1.13.*",
-		"illuminate/config": "5.0.*"
+		"illuminate/config": "5.0.*",
+		"monolog/monolog": "1.13.*"
 	},
 	"require-dev": {
         "mockery/mockery": "~0.9",

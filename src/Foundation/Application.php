@@ -2,23 +2,11 @@
 
 namespace Hack\Foundation;
 
-use Hack\Foundation\Listeners\StringResponseListener;
-use Hack\Config\Repository as ConfigRepository;
 use Hack\Controller as BaseController;
-use Hack\ServiceProviderInterface;
-use Hack\ControllerFactory;
 use Hack\Bootstrapper\Bootstrapable;
-use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Symfony\Component\HttpKernel\HttpKernel;
+use Hack\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Loader\PhpFileLoader;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Config\FileLocator;
 
 class Application extends \Pimple\Container
 {
@@ -30,6 +18,10 @@ class Application extends \Pimple\Container
 
 	protected $bootstrappers = array(
 		'Hack\Bootstrapper\LoadConfiguration',
+		'Hack\Bootstrapper\DetectEnvironment', //should be the first in stack
+		'Hack\Bootstrapper\SetKernelDefinition',
+		'Hack\Bootstrapper\RegisterProviders',
+		'Hack\Bootstrapper\BootProviders',
 	);
 	
 	/**
@@ -45,36 +37,7 @@ class Application extends \Pimple\Container
 
 		$this->bootstrapWith($this->bootstrappers);
 
-		$this['debug'] = $this['config']['app.debug'];
-		
-		$this['resolver'] = function($c) {
-			return new ControllerResolver;
-		};
-		$this['routes'] = function($c) {
-			return new RouteCollection;
-		};
-		$this['controllers'] = function($c) {
-			return new ControllerFactory($c['routes']);
-		};
-		$this['request_context'] = function($c) {
-			return new RequestContext;
-		};
-		$this['dispatcher'] = function($c) {
-			$matcher = new UrlMatcher($this['routes'], $this['request_context']);
-			$dispatcher = new EventDispatcher();
-			$dispatcher->addSubscriber(new StringResponseListener);
-			$dispatcher->addSubscriber(new RouterListener($matcher));
-			return $dispatcher;
-		};
-		$this['kernel'] = function($c) {
-			return new HttpKernel($this['dispatcher'], $this['resolver']);
-		};
 		BaseController::setApplication($this);
-		if($this['debug']) \Symfony\Component\Debug\Debug::enable();
-		
-		date_default_timezone_set($this['config']['app.timezone']);
-
-		$this->registerProviders();
 	}
 
 	/**
@@ -141,12 +104,10 @@ class Application extends \Pimple\Container
 	{
 		$this['request_context']->fromRequest($request);
 
-		$this->boot();
-
 		return $this['kernel']->handle($request);
 	}
 
-	public function boot()
+	public function bootProviders()
 	{
 		if ($this->booted) return;
 

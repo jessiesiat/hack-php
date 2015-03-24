@@ -20,6 +20,8 @@ class LoadConfiguration implements Bootstrapable
 		$app['config'] = $config = new Repository;
 
 		$this->loadConfigurationFiles($app, $config);
+
+		date_default_timezone_set($app['config']['app.timezone']);
 	}
 
 	/**
