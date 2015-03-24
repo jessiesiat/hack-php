@@ -11,14 +11,15 @@
         }
     ],
 	"require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
 		"symfony/http-kernel": "2.6.*",
 		"symfony/routing": "2.6.*",
 		"symfony/finder": "2.6.*",
 		"symfony/config": "~2.2",
 		"pimple/pimple": "3.0.0",
 		"twig/twig": "~1.0",
-		"illuminate/support": "5.0.*"
+		"illuminate/support": "5.0.*",
+		"monolog/monolog": "1.13.*"
 	},
 	"require-dev": {
         "mockery/mockery": "~0.9",
