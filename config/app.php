@@ -8,7 +8,7 @@ return array(
 
 	'providers' => array(
 
-		'Hack\Providers\ViewServiceProvider',
+		'Hack\Provider\TwigServiceProvider',
 
 	),
 

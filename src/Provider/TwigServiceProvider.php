@@ -1,12 +1,12 @@
 <?php
 
-namespace Hack\Providers;
+namespace Hack\Provider;
 
 use Pimple\Container;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
-class ViewServiceProvider implements \Pimple\ServiceProviderInterface
+class TwigServiceProvider implements \Pimple\ServiceProviderInterface
 {
 	/**
 	 * Register a service into the container
