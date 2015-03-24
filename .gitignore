@@ -3,3 +3,4 @@ composer.lock
 /storage/
 /vendor/
 /public/
+/resources/

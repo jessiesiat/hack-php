@@ -51,9 +51,11 @@ class Application extends \Pimple\Container
 		$this['controllers'] = function($c) {
 			return new ControllerFactory($c['routes']);
 		};
+		$this['request_context'] = function($c) {
+			return new RequestContext;
+		};
 		$this['dispatcher'] = function($c) {
-			$context = new RequestContext();
-			$matcher = new UrlMatcher($this['routes'], $context);
+			$matcher = new UrlMatcher($this['routes'], $this['request_context']);
 			$dispatcher = new EventDispatcher();
 			$dispatcher->addSubscriber(new StringResponseListener);
 			$dispatcher->addSubscriber(new RouterListener($matcher));
@@ -94,7 +96,7 @@ class Application extends \Pimple\Container
 	 */
 	public function handle(Request $request)
 	{
-		$this->flushRoutes();
+		$this['request_context']->fromRequest($request);
 
 		return $this['kernel']->handle($request);
 	}

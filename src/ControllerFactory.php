@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Route;
 class ControllerFactory {
 	
 	protected $routes;
+	public $methods = array();
 
 	public function __construct(RouteCollection $routes)
 	{

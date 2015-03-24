@@ -4,6 +4,7 @@ namespace Tests;
 
 use Hack\Foundation\Application;
 use Hack\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,6 +50,21 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 		$class4 = $app->make('Tests\AbstractClass', ['acme' => 'Jessie']);
 		$this->assertSame('Joe', $class4->getName());
+	}
+
+	public function testPostRequestInControllers()
+	{
+		$app = new Application;
+
+		$app->post('/foo', function() {
+			return 'fooBar';
+		});
+
+		$request = Request::create('/foo', 'POST');
+
+		$response = $app->handle($request);
+
+		$this->assertSame('fooBar', $response->getContent());
 	}
 
 }

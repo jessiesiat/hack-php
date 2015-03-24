@@ -8,7 +8,7 @@ return array(
 
 	'providers' => array(
 
-		'Hack\View\ViewServiceProvider',
+		'Hack\Providers\ViewServiceProvider',
 
 	),
 

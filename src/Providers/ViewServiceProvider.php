@@ -1,6 +1,6 @@
 <?php
 
-namespace Hack\View;
+namespace Hack\Providers;
 
 use Pimple\Container;
 use Twig_Loader_Filesystem;
