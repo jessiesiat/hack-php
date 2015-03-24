@@ -39,14 +39,9 @@ class Application extends \Pimple\Container
      *
      * @param array $items 	The parameters or objects.
      */
-	public function __construct($items = array())
+	public function __construct($basePath = null)
 	{
-		parent::__construct($items);
-
-		$this['path.app'] = realpath(__DIR__.'/../../app');
-		$this['path.base'] = realpath(__DIR__.'/../..');
-		$this['path.config'] = realpath(__DIR__.'/../../config');
-		$this['path.storage'] = realpath(__DIR__.'/../../storage');
+		if(null !== $basePath) $this->setBasePath($basePath);
 
 		$this->bootstrapWith($this->bootstrappers);
 
@@ -377,6 +372,20 @@ class Application extends \Pimple\Container
 		}
 
 		return $parameters;
+	}
+
+	public function setBasePath($basePath)
+	{
+		$this['path.base'] = $basePath;
+
+		$this->setPaths($basePath);
+	}
+
+	public function setPaths($basePath)
+	{
+		foreach (['app', 'config', 'storage'] as $path) {
+			$this['path.'.$path] = $basePath.DIRECTORY_SEPARATOR.$path;
+		}
 	}
 
 }

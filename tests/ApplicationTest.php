@@ -9,9 +9,19 @@ use Symfony\Component\HttpFoundation\Request;
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
 
+	public $app;
+
+	/**
+	 * Called before every test
+	 */
+	public function setUp()
+	{
+		$this->app  = new Application(realpath(__DIR__.'/..'));
+	}
+
     public function testApplicationInstance()
 	{
-		$app = new Application;
+		$app = $this->app;
 
 		$this->assertInstanceOf('Hack\Foundation\Application', $app);
 		$this->assertInstanceOf('Pimple\Container', $app);
@@ -19,7 +29,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 	public function testApplicationContainer()
 	{
-		$app = new Application;
+		$app = $this->app;
 		$app['foo'] = 'bar';
 
 		$this->assertSame('bar', $app['foo']);
@@ -28,7 +38,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 	public function testBaseControllerHasApplicationInstance()
 	{
-		$app = new Application;
+		$app = $this->app;
 		$controllerApp = Controller::getApplication();
 
 		$this->assertInstanceOf('Hack\Foundation\Application', $controllerApp);
@@ -36,7 +46,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 	public function testCanCreateInstanceFromAbstractClass()
 	{
-		$app = new Application;
+		$app = $this->app;
 
 		$class = $app->make('Tests\AbstractClass', ['name' => 'Jessie']);
 		$this->assertInstanceOf('Tests\AbstractClass', $class);
@@ -54,7 +64,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
 	public function testPostRequestInControllers()
 	{
-		$app = new Application;
+		$app = $this->app;
 
 		$app->post('/foo', function() {
 			return 'fooBar';
