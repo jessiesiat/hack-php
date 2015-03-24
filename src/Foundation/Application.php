@@ -2,6 +2,12 @@
 
 namespace Hack\Foundation;
 
+use Hack\Foundation\Listeners\StringResponseListener;
+use Hack\Config\Repository as ConfigRepository;
+use Hack\Controller as BaseController;
+use Hack\ServiceProviderInterface;
+use Hack\ControllerFactory;
+use Hack\Bootstrapper\Bootstrapable;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -13,17 +19,18 @@ use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Config\FileLocator;
-use Hack\Foundation\Listeners\StringResponseListener;
-use Hack\Config\Repository as ConfigRepository;
-use Hack\Controller as BaseController;
-use Hack\ServiceProviderInterface;
-use Hack\ControllerFactory;
 
 class Application extends \Pimple\Container
 {
 	protected $booted = false;
 
+	protected $hasBeenBootstrapped = false;
+
 	protected $providers = array();
+
+	protected $bootstrappers = array(
+		'Hack\Bootstrapper\LoadConfiguration',
+	);
 	
 	/**
      * Instantiate a new Application. Registers base services / parameters into the 
@@ -40,9 +47,9 @@ class Application extends \Pimple\Container
 		$this['path.base'] = realpath(__DIR__.'/../..');
 		$this['path.config'] = realpath(__DIR__.'/../../config');
 		$this['path.storage'] = realpath(__DIR__.'/../../storage');
-		$this['config'] = function($c) {
-			return (new ConfigRepository)->loadFromPath($c['path.config']);
-		};
+
+		$this->bootstrapWith($this->bootstrappers);
+
 		$this['debug'] = $this['config']['app.debug'];
 		
 		$this['resolver'] = function($c) {
@@ -96,6 +103,21 @@ class Application extends \Pimple\Container
 
 			$object->register($this);
 		}
+	}
+
+	public function bootstrapWith(array $boostrappers)
+	{
+		if ($this->hasBeenBootstrapped) return;
+
+		foreach ($boostrappers as $boostrapper) {
+			$object = $this->make($boostrapper);
+			if (!$object instanceOf Bootstrapable) {
+				throw new \Exception("%s object must implement Bootstrapable interface", get_class($object));
+			}
+			$object->bootstrap($this);
+		}
+
+		$this->hasBeenBootstrapped = true;
 	}
 
 	/**
