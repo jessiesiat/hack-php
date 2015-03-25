@@ -20,7 +20,8 @@
 		"twig/twig": "~1.0",
 		"illuminate/support": "5.0.*",
 		"illuminate/config": "5.0.*",
-		"monolog/monolog": "1.13.*"
+		"monolog/monolog": "1.13.*",
+		"vlucas/phpdotenv": "~1.1"
 	},
 	"require-dev": {
         "mockery/mockery": "~0.9",
