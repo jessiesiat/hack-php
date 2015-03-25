@@ -11,7 +11,13 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionListener implements EventSubscriberInterface
 {
-	
+	/** 
+     * Handles the event. Transform the Exception to a Response object
+     * and pass it back to the event.
+     *
+     * @param  \Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent $event
+     * @return void
+     */
 	public function onKernelException(GetResponseForExceptionEvent $event) 
 	{
 		$exception = $event->getException();
@@ -37,6 +43,9 @@ class ExceptionListener implements EventSubscriberInterface
         $event->setResponse($response);
 	}
 
+    /**
+     * {@inheritdoc}
+     */
 	public static function getSubscribedEvents()
     {
         return array(

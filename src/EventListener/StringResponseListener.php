@@ -8,6 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
  
 class StringResponseListener implements EventSubscriberInterface
 {
+    /**
+     * Handles the event. Transform the raw response to a Response object
+     * if it is not. 
+     *
+     * @param  \Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent $event
+     * @return void
+     */
     public function onView(GetResponseForControllerResultEvent $event)
     {
         $response = $event->getControllerResult();
@@ -17,6 +24,9 @@ class StringResponseListener implements EventSubscriberInterface
         }
     }
  
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return array('kernel.view' => 'onView');
