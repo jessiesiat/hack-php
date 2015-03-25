@@ -41,9 +41,30 @@ class Application extends \Pimple\Container
 	}
 
 	/**
-	 * Registers core service providers into the container.
-	 * Service providers are found in providers array in 
-	 * app config path.
+	 * Bootstrap the application bootstrapers
+	 *
+	 * @param  array  $bootstrappers
+	 */
+	public function bootstrapWith(array $boostrappers)
+	{
+		if ($this->hasBeenBootstrapped) return;
+
+		foreach ($boostrappers as $boostrapper) {
+			$object = $this->make($boostrapper);
+			if (!$object instanceOf Bootstrapable) {
+				throw new \Exception("%s object must implement Bootstrapable interface", get_class($object));
+			}
+			$object->bootstrap($this);
+		}
+
+		$this->hasBeenBootstrapped = true;
+	}
+
+	/**
+	 * Registers core service providers into the container. Service 
+	 * providers are found in providers array in app config path.
+	 *
+	 * @return void
 	 */
 	public function registerProviders()
 	{
@@ -63,19 +84,19 @@ class Application extends \Pimple\Container
 		}
 	}
 
-	public function bootstrapWith(array $boostrappers)
+	/**
+	 * Boots the application services providers
+	 * 
+	 * @return  void
+	 */
+	public function bootProviders()
 	{
-		if ($this->hasBeenBootstrapped) return;
+		if ($this->booted) return;
 
-		foreach ($boostrappers as $boostrapper) {
-			$object = $this->make($boostrapper);
-			if (!$object instanceOf Bootstrapable) {
-				throw new \Exception("%s object must implement Bootstrapable interface", get_class($object));
-			}
-			$object->bootstrap($this);
+		foreach ($this->providers as $provider) {
+			$provider->boot($this);
 		}
-
-		$this->hasBeenBootstrapped = true;
+		$this->booted = true;
 	}
 
 	/**
@@ -97,7 +118,7 @@ class Application extends \Pimple\Container
 	/**
 	 * Handles the Request and sends back the Response
 	 *
-	 * @param Symfony\Component\HttpFoundation\Request  $request
+	 * @param  Symfony\Component\HttpFoundation\Request  $request
 	 * @return Symfony\Component\HttpFoundation\Response
 	 */
 	public function handle(Request $request)
@@ -105,16 +126,6 @@ class Application extends \Pimple\Container
 		$this['request_context']->fromRequest($request);
 
 		return $this['kernel']->handle($request);
-	}
-
-	public function bootProviders()
-	{
-		if ($this->booted) return;
-
-		foreach ($this->providers as $provider) {
-			$provider->boot($this);
-		}
-		$this->booted = true;
 	}
 
 	/**
@@ -181,14 +192,6 @@ class Application extends \Pimple\Container
 	public function delete($pattern, $to = null)
 	{
 		$this['controllers']->match('DELETE', $pattern, $to);
-	}
-
-	/** 
-	 * Flushes the routes to the application
-	 */
-	public function flushRoutes()
-	{
-		$this['routes']->addCollection($this['controllers']->allRoutes());
 	}
 
 	/**
