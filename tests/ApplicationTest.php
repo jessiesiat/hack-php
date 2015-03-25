@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Hack\Foundation\Application;
+use Hack\Application;
 use Hack\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,7 +23,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 	{
 		$app = $this->app;
 
-		$this->assertInstanceOf('Hack\Foundation\Application', $app);
+		$this->assertInstanceOf('Hack\Application', $app);
 		$this->assertInstanceOf('Pimple\Container', $app);
 	}
 
@@ -41,7 +41,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 		$app = $this->app;
 		$controllerApp = Controller::getApplication();
 
-		$this->assertInstanceOf('Hack\Foundation\Application', $controllerApp);
+		$this->assertInstanceOf('Hack\Application', $controllerApp);
 	}
 
 	public function testCanCreateInstanceFromAbstractClass()

@@ -1,21 +1,32 @@
 <?php 
 
-namespace Hack\Foundation;
+namespace Hack;
 
 use Hack\Controller as BaseController;
 use Hack\Bootstrapper\Bootstrapable;
-use Hack\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class Application extends \Pimple\Container
 {
+	/**
+	 * @var bool  Whether the providers are booted
+	 */
 	protected $booted = false;
 
+	/**
+	 * @var bool  Whether bootstrappers has been bootstrapped
+	 */
 	protected $hasBeenBootstrapped = false;
 
+	/**
+	 * @var array  Instances of providers registered
+	 */
 	protected $providers = array();
 
+	/**
+	 * @var array  Array of bootstrappers in order
+	 */
 	protected $bootstrappers = array(
 		'Hack\Bootstrapper\LoadConfiguration',
 		'Hack\Bootstrapper\DetectEnvironment', //should be the first in stack
@@ -25,11 +36,11 @@ class Application extends \Pimple\Container
 	);
 	
 	/**
-     * Instantiate a new Application. Registers base services / parameters into the 
-     * DI container. Acccepts array of key value pairs to be registered on
+     * Instantiate a new Application. Registers base services / parameters into 
+     * the DI container. Acccepts array of key value pairs to be registered on
      * the container.
      *
-     * @param array $items 	The parameters or objects.
+     * @param string  $basePath  App base path
      */
 	public function __construct($basePath = null)
 	{
@@ -338,6 +349,12 @@ class Application extends \Pimple\Container
 		return $parameters;
 	}
 
+	/**
+	 * Sets the base path 
+	 *
+	 * @param   string  $basePath
+	 * @return  void
+	 */
 	public function setBasePath($basePath)
 	{
 		$this['path.base'] = $basePath;
@@ -345,6 +362,12 @@ class Application extends \Pimple\Container
 		$this->setPaths($basePath);
 	}
 
+	/**
+	 * Sets the application paths i.e. app, config, storage
+	 *
+	 * @param   string  $basePath
+	 * @return  void
+	 */
 	public function setPaths($basePath)
 	{
 		foreach (['app', 'config', 'storage'] as $path) {

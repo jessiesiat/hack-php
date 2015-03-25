@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Hack\Foundation\Application;
 use Hack\ControllerFactory;
 use Symfony\Component\Routing\RouteCollection;
 

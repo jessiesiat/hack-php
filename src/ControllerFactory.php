@@ -7,14 +7,29 @@ use Symfony\Component\Routing\Route;
 
 class ControllerFactory {
 	
+	/**
+	 * @var \Symfony\Component\Routing\RouteCollection
+	 */
 	protected $routes;
-	public $methods = array();
 
+	/**
+	 * Initialize the routes collection object
+	 *
+	 * @param \Symfony\Component\Routing\RouteCollection  $routes
+	 */
 	public function __construct(RouteCollection $routes)
 	{
 		$this->routes = $routes;
 	}
 
+	/**
+	 * Adds a new route 
+	 *
+	 * @param  string  $method   Http method to use
+	 * @param  string  $pattern  Url path to match for this route
+	 * @param  mixed   $to       Controller to run when the path is match
+	 * @return void
+	 */
 	public function match($method, $pattern, $to = null)
 	{
 		$defaults = array(
@@ -27,6 +42,12 @@ class ControllerFactory {
 		$this->routes->add($routeName, $route);
 	}
 
+	/**
+	 * Generates a route name
+	 * 
+	 * @param  \Symfony\Component\Routing\Route  $route
+	 * @return string
+	 */
 	public function generateRouteName($route)
     {
         $requirements = $route->getRequirements();
@@ -39,6 +60,11 @@ class ControllerFactory {
         return $routeName;
     }
 
+	/**
+	 * Returns the routes 
+	 * 
+	 * @return  \Symfony\Component\Routing\RouteCollection
+	 */    
 	public function allRoutes()
 	{
 		return $this->routes;

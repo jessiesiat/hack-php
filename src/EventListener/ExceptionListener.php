@@ -1,6 +1,6 @@
 <?php 
 
-namespace Hack\Foundation\Listeners;
+namespace Hack\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Debug\Exception\FlattenException;

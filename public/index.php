@@ -10,10 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
  * -----------------------------------------------------------------
  */
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
-$app = new Hack\Foundation\Application(realpath(__DIR__.'/..'));
+$app = new Hack\Application(realpath(__DIR__.'/..'));
 
 $app->get('/', 'App\\Controllers\\HelloController::index');
 $app->post('/bar', function(Request $request) {

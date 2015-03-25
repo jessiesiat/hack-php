@@ -2,7 +2,7 @@
 
 namespace Hack\Bootstrapper;
 
-use Hack\Foundation\Application;
+use Hack\Application;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
 use Illuminate\Config\Repository;
 use Symfony\Component\Finder\SplFileInfo;
@@ -13,7 +13,7 @@ class LoadConfiguration implements Bootstrapable
 	/**
 	 * Load the configuration options for use by the application
 	 *
-	 * @param $app  Hack\Foundation\Application
+	 * @param $app  Hack\Application
 	 */
 	public function bootstrap(Application $app)
 	{
@@ -27,7 +27,7 @@ class LoadConfiguration implements Bootstrapable
 	/**
 	 * Load the configuration items from all of the files.
 	 *
-	 * @param  \Illuminate\Contracts\Foundation\Application  $app
+	 * @param  Hack\Application  $app
 	 * @param  \Illuminate\Contracts\Config\Repository  $config
 	 * @return void
 	 */

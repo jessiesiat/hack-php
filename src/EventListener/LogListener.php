@@ -2,7 +2,7 @@
 
 namespace Hack\EventListener;
 
-use Hack\Foundation\Application;
+use Hack\Application;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

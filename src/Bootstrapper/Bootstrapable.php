@@ -2,7 +2,7 @@
 
 namespace Hack\Bootstrapper;
 
-use Hack\Foundation\Application;
+use Hack\Application;
 
 interface Bootstrapable
 {

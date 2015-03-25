@@ -2,7 +2,7 @@
 
 namespace Hack\Bootstrapper;
 
-use Hack\Foundation\Application;
+use Hack\Application;
 use Symfony\Component\Debug\Debug;
 
 class DetectEnvironment implements Bootstrapable

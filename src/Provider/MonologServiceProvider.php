@@ -3,7 +3,7 @@
 namespace Hack\Provider;
 
 use Hack\ServiceProviderInterface;
-use Hack\Foundation\Application;
+use Hack\Application;
 use Hack\EventListener\LogListener;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
