@@ -28,8 +28,8 @@ class Application extends \Pimple\Container
 	 * @var array  Array of bootstrappers in order
 	 */
 	protected $bootstrappers = array(
+		'Hack\Bootstrapper\DetectEnvironment',
 		'Hack\Bootstrapper\LoadConfiguration',
-		'Hack\Bootstrapper\DetectEnvironment', //should be the first in stack
 		'Hack\Bootstrapper\SetKernelDefinition',
 		'Hack\Bootstrapper\RegisterProviders',
 		'Hack\Bootstrapper\BootProviders',
