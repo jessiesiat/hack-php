@@ -4,6 +4,8 @@ namespace Hack\Bootstrapper;
 
 use Hack\Application;
 use Symfony\Component\Debug\Debug;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 use Dotenv;
 
 class DetectEnvironment implements Bootstrapable
@@ -20,7 +22,27 @@ class DetectEnvironment implements Bootstrapable
 
 		$app['env'] = getenv('APP_ENV') ?: 'production';
 
-		if ($this->isDebugOn()) Debug::enable();
+		if ($this->isDebugOn()) {
+			Debug::enable();	
+		} else {
+			set_exception_handler([$this, 'exceptionHandler']);
+		}
+	}
+
+	/** 
+	 * Exception handler if debug is off
+	 *
+	 * @param  \Exception $e
+	 * @return \Symfony\Component\HttpFoundation\Response 
+	 */
+	public function exceptionHandler(\Exception $e)
+	{
+		if ($e instanceof HttpExceptionInterface)
+		{
+			// render custom view here if exists base on status code
+		}
+
+		return (new SymfonyExceptionHandler)->createResponse($e)->send();
 	}
 
 	/**

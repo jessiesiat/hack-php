@@ -87,12 +87,27 @@ class Application extends \Pimple\Container
 		{
 			$this->providers[] = $object = $this->make($provider);
 
-			if(!$object instanceOf ServiceProviderInterface) {
-				throw new \Exception('Service provider %s must implement Hack\ServiceProviderInterface', get_class($object));
-			}
-
-			$object->register($this);
+			$this->register($object);
 		}
+	}
+
+	/**
+	 * Register a provider in the application
+	 * 
+	 * @param  mixed $provider
+	 * @return void
+	 */
+	public function register($provider)
+	{
+		if (is_string($provider)) {
+			$provider = $this->make($provider);
+		}
+
+		if(!$provider instanceOf ServiceProviderInterface) {
+			throw new \Exception('Service provider %s must implement Hack\ServiceProviderInterface', get_class($provider));
+		}
+
+		$provider->register($this);
 	}
 
 	/**
