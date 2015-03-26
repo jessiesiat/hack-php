@@ -34,13 +34,8 @@ class LogListener implements EventSubscriberInterface {
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
 		$exception = $event->getException();
-        $message = sprintf(
-            'Error says: %s with code: %s',
-            $exception->getMessage(),
-            $exception->getCode()
-        );
-
-        $this->logger->error($message);
+		
+        $this->logger->error($exception);
 	}
 
 	/**

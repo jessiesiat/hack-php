@@ -32,6 +32,9 @@
 			"App\\": "app/",
 			"Hack\\": "src/",
 			"Tests\\": "tests"
-		}
+		},
+		"files": [
+            "src/helpers.php"
+        ]
 	}
 }

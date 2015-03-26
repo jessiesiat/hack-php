@@ -10,26 +10,35 @@ use Symfony\Component\HttpFoundation\Request;
 class Application extends \Pimple\Container
 {
 	/**
-	 * @var bool  Whether the providers are booted
+	 * Whether the providers are booted
+	 * 
+	 * @var bool  
 	 */
 	protected $booted = false;
 
 	/**
-	 * @var bool  Whether bootstrappers has been bootstrapped
+	 * Whether bootstrappers has been bootstrapped
+	 *
+	 * @var bool  
 	 */
 	protected $hasBeenBootstrapped = false;
 
 	/**
-	 * @var array  Instances of providers registered
+	 * Instances of providers registered
+	 *
+	 * @var array  
 	 */
 	protected $providers = array();
 
 	/**
-	 * @var array  Array of bootstrappers in order
+	 * Array of bootstrappers in order
+	 *
+	 * @var array  
 	 */
 	protected $bootstrappers = array(
 		'Hack\Bootstrapper\DetectEnvironment',
 		'Hack\Bootstrapper\LoadConfiguration',
+		'Hack\Bootstrapper\HandleExceptions',
 		'Hack\Bootstrapper\SetKernelDefinition',
 		'Hack\Bootstrapper\RegisterProviders',
 		'Hack\Bootstrapper\BootProviders',
