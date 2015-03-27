@@ -25,10 +25,6 @@ class MonologServiceProvider implements ServiceProviderInterface
 		};
 	}
 
-	public function boot(Application $app) 
-	{
-		// subscribe to dispatcher to trigger logging
-		$app['dispatcher']->addSubscriber(new LogListener($app['monolog.logger']));
-	}
+	public function boot(Application $app) {}
 
 }

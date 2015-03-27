@@ -10,7 +10,13 @@ use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 
 class HandleExceptions implements Bootstrapable
 {
-	
+	/**
+	 * Application instance
+	 *
+	 * @var Hack\Application
+	 */
+	protected $app;
+
 	/**
 	 * Define exception handler
 	 *
@@ -19,6 +25,8 @@ class HandleExceptions implements Bootstrapable
 	 */
 	public function bootstrap(Application $app)
 	{
+		$this->app = $app;
+
 		error_reporting(-1);
 
 		set_error_handler([$this, 'handleError']);
@@ -27,7 +35,7 @@ class HandleExceptions implements Bootstrapable
 
 		register_shutdown_function([$this, 'handleShutdown']);
 
-		if ($app['env'] != 'testing')
+		if ($this->app['env'] != 'testing')
 		{
 			ini_set('display_errors', 'Off');
 		}
@@ -60,7 +68,8 @@ class HandleExceptions implements Bootstrapable
 	 */
 	public function handleException($e)
 	{
-		// log the error here
+		// log the error
+		$this->app['monolog.logger']->error($e);
 
 		// check to see if app is running in console/http to create proper response
 		if (php_sapi_name() == 'cli') {
