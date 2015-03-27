@@ -3,7 +3,9 @@
 namespace Hack\Bootstrapper;
 
 use Hack\Application;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\Console\Application as ConsoleApplication;
 use Symfony\Component\Debug\ExceptionHandler as SymfonyExceptionHandler;
 
 class HandleExceptions implements Bootstrapable
@@ -62,13 +64,12 @@ class HandleExceptions implements Bootstrapable
 
 		// check to see if app is running in console/http to create proper response
 		if (php_sapi_name() == 'cli') {
-		    // console output
+		    (new ConsoleApplication)->renderException($e, new ConsoleOutput);
 		} else {
 			(new SymfonyExceptionHandler(env('APP_DEBUG')))
 							->createResponse($e)
 							->send();
 		}
-
 	}
 
 	/**
