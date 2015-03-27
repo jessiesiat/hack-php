@@ -73,9 +73,9 @@ class HandleExceptions implements Bootstrapable
 
 		// check to see if app is running in console/http to create proper response
 		if (php_sapi_name() == 'cli') {
-		    (new ConsoleApplication)->renderException($e, new ConsoleOutput);
+		    return (new ConsoleApplication)->renderException($e, new ConsoleOutput);
 		} else {
-			(new SymfonyExceptionHandler(env('APP_DEBUG')))
+			return (new SymfonyExceptionHandler(env('APP_DEBUG')))
 							->createResponse($e)
 							->send();
 		}

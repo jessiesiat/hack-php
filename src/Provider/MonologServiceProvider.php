@@ -2,11 +2,11 @@
 
 namespace Hack\Provider;
 
-use Hack\ServiceProviderInterface;
 use Hack\Application;
-use Hack\EventListener\LogListener;
-use Monolog\Handler\StreamHandler;
+use Hack\ServiceProviderInterface;
 use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 
 class MonologServiceProvider implements ServiceProviderInterface
 {
@@ -19,10 +19,15 @@ class MonologServiceProvider implements ServiceProviderInterface
 
 			return $logger;
 		};
+		
 		$app['monolog.logger.name'] = 'hack-php';
 		$app['monolog.logger.file'] = 'hack-php.log';
 		$app['monolog.handler.default'] = function($c) {
-			return new StreamHandler($c['path.storage'].'/'.$c['monolog.logger.file'], Logger::WARNING);
+			$formatter = new LineFormatter(null, null, true, true);
+			$stream = new StreamHandler($c['path.storage'].'/'.$c['monolog.logger.file'], Logger::WARNING);
+			$stream->setFormatter($formatter);
+
+			return $stream;
 		};
 	}
 
