@@ -16,6 +16,7 @@
 		"symfony/routing": "2.6.*",
 		"symfony/finder": "2.6.*",
 		"symfony/config": "~2.2",
+		"symfony/console": "2.6.*",
 		"pimple/pimple": "3.0.0",
 		"twig/twig": "~1.0",
 		"illuminate/support": "5.0.*",
@@ -29,12 +30,16 @@
     },
 	"autoload": {
 		"psr-4": {
-			"App\\": "app/",
-			"Hack\\": "src/",
-			"Tests\\": "tests"
+			"Hack\\": "src/"
 		},
 		"files": [
             "src/helpers.php"
         ]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"App\\": "app/",
+			"Tests\\": "tests/"
+		}
 	}
 }
