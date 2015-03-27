@@ -20,8 +20,9 @@ class MonologServiceProvider implements ServiceProviderInterface
 			return $logger;
 		};
 		$app['monolog.logger.name'] = 'hack-php';
+		$app['monolog.logger.file'] = 'hack-php.log';
 		$app['monolog.handler.default'] = function($c) {
-			return new StreamHandler($c['path.storage'].'/hack-php.log', Logger::WARNING);
+			return new StreamHandler($c['path.storage'].'/'.$c['monolog.logger.file'], Logger::WARNING);
 		};
 	}
 
