@@ -53,7 +53,11 @@ class Application extends \Pimple\Container
      */
 	public function __construct($basePath = null)
 	{
-		if(null !== $basePath) $this->setBasePath($basePath);
+		if (null === $basePath || !is_dir($basePath)) 
+		{
+			throw new \InvalidArgumentException(sprintf('Provide a valid base path for your application, %s given.', $basePath ?: 'NULL'));
+		}
+		$this->setBasePath($basePath);
 
 		$this->bootstrapWith($this->bootstrappers);
 
@@ -394,7 +398,7 @@ class Application extends \Pimple\Container
 	 */
 	public function setPaths($basePath)
 	{
-		foreach (['app', 'config', 'storage'] as $path) {
+		foreach (['config', 'storage', 'resources'] as $path) {
 			$this['path.'.$path] = $basePath.DIRECTORY_SEPARATOR.$path;
 		}
 	}
