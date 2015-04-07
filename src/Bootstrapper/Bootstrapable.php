@@ -9,7 +9,7 @@ interface Bootstrapable
 	/**
 	 * Bootstrap an object for use with the application
 	 *
-	 * @param $app  Hack\Foundation\Application
+	 * @param $app  \Hack\Application
 	 */
 	public function bootstrap(Application $app);
 }

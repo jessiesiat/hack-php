@@ -20,7 +20,10 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class SetKernelDefinition implements Bootstrapable
 {
 	/**
-	 * {@inheritdoc}
+	 * Set's HttpKernel Definition. 
+	 * HttpKernel handles a request then transform it into into a Response
+	 *
+	 * @param $app  \Hack\Application
 	 */
 	public function bootstrap(Application $app)
 	{

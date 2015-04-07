@@ -45,11 +45,9 @@ class Application extends \Pimple\Container
 	);
 	
 	/**
-     * Instantiate a new Application. Registers base services / parameters into 
-     * the DI container. Acccepts array of key value pairs to be registered on
-     * the container.
+     * Instantiate a new Application. 
      *
-     * @param string  $basePath  App base path
+     * @param string  $basePath  Application base path
      */
 	public function __construct($basePath = null)
 	{
