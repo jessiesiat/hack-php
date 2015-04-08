@@ -2,53 +2,59 @@
 
 namespace Hack;
 
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 class ControllerFactory {
-	
-	/**
-	 * @var \Symfony\Component\Routing\RouteCollection
-	 */
-	protected $routes;
+    
+    /**
+     * @var \Symfony\Component\Routing\RouteCollection
+     */
+    protected $routes;
 
-	/**
-	 * Initialize the routes collection object
-	 *
-	 * @param \Symfony\Component\Routing\RouteCollection  $routes
-	 */
-	public function __construct(RouteCollection $routes)
-	{
-		$this->routes = $routes;
-	}
+    /** 
+     * @var array  Controllers
+     */
+    protected $controllers = [];
 
-	/**
-	 * Adds a new route 
-	 *
-	 * @param  string  $method   Http method to use
-	 * @param  string  $pattern  Url path to match for this route
-	 * @param  mixed   $to       Controller to run when the path is match
-	 * @return void
-	 */
-	public function match($method, $pattern, $to = null)
-	{
-		$defaults = array(
-			'_controller' => $to
-		);
-		$route = new Route($pattern, $defaults);
-		$route->setMethods(explode('|', $method));
-		$routeName = $this->generateRouteName($route);
+    /**
+     * Initialize the routes collection object
+     *
+     * @param \Symfony\Component\Routing\RouteCollection  $routes
+     */
+    public function __construct(RouteCollection $routes = null)
+    {
+        $this->routes = $routes ?: new RouteCollection;
+    }
 
-		$this->routes->add($routeName, $route);
-	}
+    /**
+     * Adds a new route 
+     *
+     * @param  string  $method   Http method to use
+     * @param  string  $pattern  Url path to match for this route
+     * @param  mixed   $to       Controller to run when the path is match
+     * @return void
+     */
+    public function match($method, $pattern, $to = null)
+    {
+        $defaults = array(
+            '_controller' => $to
+        );
+        $route = new Route($pattern, $defaults);
+        $route->setMethods(explode('|', $method));
 
-	/**
-	 * Generates a route name
-	 * 
-	 * @param  \Symfony\Component\Routing\Route  $route
-	 * @return string
-	 */
-	public function generateRouteName($route)
+        $this->controllers[] = $controller = new Controller($route);
+
+        return $controller;
+    }
+
+    /**
+     * Generates a route name
+     * 
+     * @param  \Symfony\Component\Routing\Route  $route
+     * @return string
+     */
+    public function generateRouteName($route)
     {
         $requirements = $route->getRequirements();
         $method = isset($requirements['_method']) ? $requirements['_method'] : '';
@@ -59,15 +65,29 @@ class ControllerFactory {
 
         return $routeName;
     }
+    
+    /** 
+     * Flush routes definition
+     * 
+     * @return  Symfony\Component\Routing\RouteCollection
+     */
+    public function flush()
+    {
+        $routes = $this->routes;
 
-	/**
-	 * Returns the routes 
-	 * 
-	 * @return  \Symfony\Component\Routing\RouteCollection
-	 */    
-	public function allRoutes()
-	{
-		return $this->routes;
-	}
+        foreach ($this->controllers as $controller) {
+            if (!$name = $controller->getRouteName()) {
+                $name = $controller->generateRouteName();
+            }
+            while($routes->get($name)) {
+                $name .= '_';
+            }
+            $controller->bind($name);
+
+            $routes->add($name, $controller->getRoute());
+        }
+
+        return $routes;
+    }
 
 }

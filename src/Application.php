@@ -162,6 +162,9 @@ class Application extends \Pimple\Container
 	{
 		$this['request_context']->fromRequest($request);
 
+		// flushes routes definition
+		$this->flush();
+
 		return $this['kernel']->handle($request);
 	}
 
@@ -177,6 +180,16 @@ class Application extends \Pimple\Container
 	}
 
 	/**
+	 * Set routes definition to the container
+	 * 
+	 * @return void
+	 */
+	private function flush()
+	{
+		$this['routes']->addCollection($this['controllers']->flush());
+	}
+
+	/**
 	 * Add GET route to the application
 	 *
 	 * @param mixed  $pattern  Route path
@@ -184,7 +197,7 @@ class Application extends \Pimple\Container
 	 */
 	public function get($pattern, $to = null)
 	{
-		$this['controllers']->match('GET', $pattern, $to);
+		return $this['controllers']->match('GET', $pattern, $to);
 	}
 
 	/**
@@ -195,7 +208,7 @@ class Application extends \Pimple\Container
 	 */
 	public function post($pattern, $to = null)
 	{
-		$this['controllers']->match('POST', $pattern, $to);
+		return $this['controllers']->match('POST', $pattern, $to);
 	}
 
 	/**
@@ -206,7 +219,7 @@ class Application extends \Pimple\Container
 	 */
 	public function put($pattern, $to = null)
 	{
-		$this['controllers']->match('PUT', $pattern, $to);
+		return $this['controllers']->match('PUT', $pattern, $to);
 	}
 
 	/**
@@ -217,7 +230,7 @@ class Application extends \Pimple\Container
 	 */
 	public function patch($pattern, $to = null)
 	{
-		$this['controllers']->match('PATCH', $pattern, $to);
+		return $this['controllers']->match('PATCH', $pattern, $to);
 	}
 
 	/**
@@ -228,7 +241,7 @@ class Application extends \Pimple\Container
 	 */
 	public function delete($pattern, $to = null)
 	{
-		$this['controllers']->match('DELETE', $pattern, $to);
+		return $this['controllers']->match('DELETE', $pattern, $to);
 	}
 
 	/**

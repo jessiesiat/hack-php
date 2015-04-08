@@ -12,7 +12,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->factory = new ControllerFactory(new RouteCollection());
+		$this->factory = new ControllerFactory;
 	}
 
 	public function testMatchController()
@@ -24,7 +24,7 @@ class ControllerFactoryTest extends \PHPUnit_Framework_TestCase
 		$this->factory->match('GET', '/foo', $callback);
 		$this->factory->match('POST', '/foo', $callback);
 
-		$this->assertCount(2, $this->factory->allRoutes());
+		$this->assertCount(2, $this->factory->flush());
 	}
 
 }
