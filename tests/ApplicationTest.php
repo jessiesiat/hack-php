@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Hack\Application;
-use Hack\Controller;
+use Hack\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
@@ -39,7 +39,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 	public function testBaseControllerHasApplicationInstance()
 	{
 		$app = $this->app;
-		$controllerApp = Controller::getApplication();
+		$controllerApp = BaseController::getApplication();
 
 		$this->assertInstanceOf('Hack\Application', $controllerApp);
 	}

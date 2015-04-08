@@ -6,7 +6,7 @@ use Hack\Application;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
-abstract class Controller {
+abstract class BaseController {
 
 	/**
 	 * The application instance being facaded.

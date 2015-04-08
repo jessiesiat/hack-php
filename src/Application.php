@@ -2,7 +2,7 @@
 
 namespace Hack;
 
-use Hack\Controller as BaseController;
+use Hack\BaseController;
 use Hack\Bootstrapper\Bootstrapable;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
