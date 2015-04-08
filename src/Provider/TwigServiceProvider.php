@@ -21,10 +21,17 @@ class TwigServiceProvider implements ServiceProviderInterface
 			$viewCachePath =$app['config']['view.cache_path'];
 			$loader = new Twig_Loader_Filesystem($viewPath);
 
-			return new Twig_Environment($loader, array(
+			$twig = new Twig_Environment($loader, array(
 			    'cache' => $viewCachePath,
 			    'debug' => true,
 			));
+			$twig->addGlobal('app', $app);
+
+			if (env('APP_DEBUG')) {
+                $twig->addExtension(new \Twig_Extension_Debug());
+            }
+            
+			return $twig;
 		};
 	}
 

@@ -3,12 +3,18 @@
 namespace Hack;
 
 use Hack\BaseController;
+use Hack\Application\UrlGenerator;
 use Hack\Bootstrapper\Bootstrapable;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class Application extends \Pimple\Container
 {
+	/** 
+	 * Trait on generating path/url to routes
+	 */
+	use UrlGenerator;
+
 	/**
 	 * Whether the providers are booted
 	 * 
