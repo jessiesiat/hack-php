@@ -24,7 +24,7 @@ class MonologServiceProvider implements ServiceProviderInterface
 		$app['monolog.logger.file'] = 'hack-php.log';
 		$app['monolog.handler.default'] = function($c) {
 			$formatter = new LineFormatter(null, null, true, true);
-			$stream = new StreamHandler($c['path.storage'].'/'.$c['monolog.logger.file'], Logger::WARNING);
+			$stream = new StreamHandler($c['storage.path'].'/'.$c['monolog.logger.file'], Logger::WARNING);
 			$stream->setFormatter($formatter);
 
 			return $stream;

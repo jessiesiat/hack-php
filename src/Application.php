@@ -5,8 +5,8 @@ namespace Hack;
 use Hack\BaseController;
 use Hack\Application\UrlGenerator;
 use Hack\Bootstrapper\Bootstrapable;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Application extends \Pimple\Container
 {
@@ -42,12 +42,8 @@ class Application extends \Pimple\Container
 	 * @var array  
 	 */
 	protected $bootstrappers = array(
-		'Hack\Bootstrapper\DetectEnvironment',
-		'Hack\Bootstrapper\LoadConfiguration',
 		'Hack\Bootstrapper\HandleExceptions',
 		'Hack\Bootstrapper\SetKernelDefinition',
-		'Hack\Bootstrapper\RegisterProviders',
-		'Hack\Bootstrapper\BootProviders',
 	);
 	
 	/**
@@ -55,13 +51,9 @@ class Application extends \Pimple\Container
      *
      * @param string  $basePath  Application base path
      */
-	public function __construct($basePath = null)
+	public function __construct(array $values = array())
 	{
-		if (null === $basePath || !is_dir($basePath)) 
-		{
-			throw new \InvalidArgumentException(sprintf('Provide a valid base path for your application, %s given.', $basePath ?: 'NULL'));
-		}
-		$this->setBasePath($basePath);
+		parent::__construct($values);
 
 		$this->bootstrapWith($this->bootstrappers);
 
@@ -96,14 +88,12 @@ class Application extends \Pimple\Container
 	 */
 	public function registerProviders()
 	{
-		$providers = $this['config']['app.providers'];
+		if (! isset($this['providers'])) return;
 
 		// Loop through each provider, create an instance and 
 		// register it in the container 
 		foreach ($providers as $provider) 
 		{
-			$this->providers[] = $object = $this->make($provider);
-
 			$this->register($object);
 		}
 	}
@@ -121,8 +111,10 @@ class Application extends \Pimple\Container
 		}
 
 		if(!$provider instanceOf ServiceProviderInterface) {
-			throw new \Exception('Service provider %s must implement Hack\ServiceProviderInterface', get_class($provider));
+			throw new \InvalidArgumentException ('Service provider %s must implement Hack\ServiceProviderInterface', get_class($provider));
 		}
+
+		$this->providers[] = $provider;
 
 		$provider->register($this);
 	}
@@ -166,6 +158,8 @@ class Application extends \Pimple\Container
 	 */
 	public function handle(Request $request)
 	{
+		$this->bootProviders();
+
 		$this['request_context']->fromRequest($request);
 
 		// flushes routes definition

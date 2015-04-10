@@ -35,7 +35,7 @@ class HandleExceptions implements Bootstrapable
 
 		register_shutdown_function([$this, 'handleShutdown']);
 
-		if ($this->app['env'] != 'testing')
+		if (isset($this->app['env']) && $this->app['env'] != 'testing')
 		{
 			ini_set('display_errors', 'Off');
 		}
@@ -68,14 +68,15 @@ class HandleExceptions implements Bootstrapable
 	 */
 	public function handleException($e)
 	{
-		// log the error
-		$this->app['monolog.logger']->error($e);
+		if (isset($this->app['monolog.logger'])) {
+			$this->app['monolog.logger']->error($e);
+		}
 
 		// check to see if app is running in console/http to create proper response
 		if (php_sapi_name() == 'cli') {
 		    return (new ConsoleApplication)->renderException($e, new ConsoleOutput);
 		} else {
-			return (new SymfonyExceptionHandler(env('APP_DEBUG')))
+			return (new SymfonyExceptionHandler($this->app['debug']))
 							->createResponse($e)
 							->send();
 		}

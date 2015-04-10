@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Request;
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
 
-	public $app;
+	protected $app;
 
 	/**
 	 * Called before every test
 	 */
 	public function setUp()
 	{
-		$this->app  = new Application(realpath(__DIR__.'/..'));
+		$this->app  = new Application;
 	}
 
     public function testApplicationInstance()

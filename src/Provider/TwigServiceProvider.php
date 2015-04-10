@@ -17,8 +17,8 @@ class TwigServiceProvider implements ServiceProviderInterface
 	public function register(Application $app)
 	{
 		$app['view'] = function ($app) {
-			$viewPath = $app['config']['view.path'];
-			$viewCachePath =$app['config']['view.cache_path'];
+			$viewPath = $app['view.path'];
+			$viewCachePath =$app['view.cache.path'];
 			$loader = new Twig_Loader_Filesystem($viewPath);
 
 			$twig = new Twig_Environment($loader, array(
@@ -27,7 +27,7 @@ class TwigServiceProvider implements ServiceProviderInterface
 			));
 			$twig->addGlobal('app', $app);
 
-			if (env('APP_DEBUG')) {
+			if (isset($app['debug']) && $app['debug']) {
                 $twig->addExtension(new \Twig_Extension_Debug());
             }
             
