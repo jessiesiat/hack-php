@@ -1,9 +1,2 @@
-.env
 phpunit.xml
 composer.lock
-/config/
-/storage/
-/vendor/
-/public/
-/resources/
-/app/

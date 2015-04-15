@@ -1,5 +1,5 @@
 {
-	"name": "jessiesiat/hack-php",
+    "name": "jessiesiat/hack-php",
     "type": "project",
     "description": "Small framework for hackers",
     "keywords": ["framework"],
