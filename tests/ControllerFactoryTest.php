@@ -1,7 +1,5 @@
 <?php 
 
-namespace Tests;
-
 use Hack\ControllerFactory;
 use Symfony\Component\Routing\RouteCollection;
 

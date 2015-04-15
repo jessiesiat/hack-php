@@ -1,7 +1,5 @@
 <?php 
 
-namespace Tests;
-
 use Hack\ControllerResolver;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,8 +28,8 @@ class ControllerResolverTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException  			\InvalidArgumentException
-	 * @expectedExceptionMessage	Unable to find controller "NonCallableController".
+	 * @expectedException  		  \InvalidArgumentException
+	 * @expectedExceptionMessage  Unable to find controller "NonCallableController".
 	 */
 	public function testNonCallableController()
 	{
@@ -47,27 +45,28 @@ class ControllerResolverTest extends \PHPUnit_Framework_TestCase
 	public function testCanGetControllerFromRequest()
 	{
 		$parameters = array(
-			'_controller' => 'Tests\TestController@sayHi',
-			'firstName' => 'Jessie',
+			'_controller' => 'TestController@sayHi',
+			'name' => 'Jessie',
 		);
 		$request = Request::create('/', 'GET');
 		$request->attributes->add($parameters);
-		$this->assertSame('Tests\TestController@sayHi', $request->attributes->get('_controller'));
+		$this->assertSame('TestController@sayHi', $request->attributes->get('_controller'));
 
 		$controller = self::$resolver->getController($request);
 		$this->assertTrue(is_callable($controller));
 
 		$arguments = self::$resolver->getArguments($request, $controller);
-		$this->assertSame('Hi Jessie Siat!', call_user_func_array($controller, $arguments));
+		$this->assertSame('Hi Jessie!', call_user_func_array($controller, $arguments));
 	}
 
 	/**
-	 * @expectedException  \RuntimeException 
+	 * @expectedException  		  \RuntimeException
+	 * @expectedExceptionMessage  Controller "TestController::sayHi()" requires that you provide a value
 	 */
 	public function testControllerHasNoDefaultArguments()
 	{
 		$parameters = array(
-			'_controller' => 'Tests\TestController::sayHi',
+			'_controller' => 'TestController::sayHi',
 		);
 		$request = Request::create('/', 'GET');
 		$request->attributes->add($parameters);
@@ -79,9 +78,9 @@ class ControllerResolverTest extends \PHPUnit_Framework_TestCase
 
 class TestController {
 
-	public function sayHi($firstName, $lastName = 'Siat')
+	public function sayHi($name)
 	{
-		return 'Hi '.$firstName.' '.$lastName.'!';
+		return 'Hi '.$name.'!';
 	}
 
 }
